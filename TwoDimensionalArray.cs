@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public class TwoDimensionalArray
@@ -91,6 +92,10 @@ public class TwoDimensionalArray
                 {
                     elements[i, j] = 0; // Обнулення
                 }
+                if (i + j > size && elements[i, j] != 0)
+                {
+                    elements[i, j] = 0;
+                }
             }
         }
     }
@@ -101,13 +106,18 @@ public class TwoDimensionalArray
     {
         int size = elements.GetLength(0);
         List<int> areaToSort = new List<int>();
+        HashSet<(int, int)> zeroPosition = new HashSet<(int, int)>();
 
         // Вибір елементів з області B6 (на або під другою діагоналлю)
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
-                if (i + j >= size - 1) // Якщо елемент належить області B6
+                if (elements[i, j] == 0 && (i + j < size - 1 || i + j > size)) // Якщо елемент належить області B6
+                {
+                    zeroPosition.Add((i, j));
+                }
+                else
                 {
                     areaToSort.Add(elements[i, j]);
                 }
@@ -125,13 +135,18 @@ public class TwoDimensionalArray
             {
                 if (i + j >= size - 1) // Якщо елемент належить області B6
                 {
-                    elements[i, j] = areaToSort[index];
-                    index++;
+                    {
+                        if (!zeroPosition.Contains((i, j)))
+                        {
+                            elements[i, j] = areaToSort[index];
+                            index++;
+                        }
+                    }
                 }
             }
         }
+
+
+
     }
-
-
-
 }
